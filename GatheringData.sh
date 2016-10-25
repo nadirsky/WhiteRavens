@@ -23,10 +23,13 @@ GatheringData()
 	adres=$(echo $line | awk '{print $2}') 
 	wget -q -O $html $adres
         
-	isbn=$(grep -m 1 -E -o ".{0,0}ISBN: .{0,13}" $html | awk '{print $2}')
+	#isbn=$(grep -m 1 -E -o ".{0,0}ISBN: .{0,13}" $html | awk '{print $2}')
+	isbn=$(grep -m 1 -E -o ".{0,0}978.{0,10}" $html)
 	date=$(grep -m 1 -E -o ".{0,0}now: new Date.{0,25}" $html | awk 'BEGIN{FS="("} {print $2}' | awk 'BEGIN{FS=","} {print $1, $2, $3, $4, $5, $6}')	
-	price=$(grep -m 1 -E -o ".{0,0}\"LowestPrice\".{0,6}" $html | awk 'BEGIN{FS=":"} {print $2}' | awk '{sub(",", ""); print}')
-	offers=$(grep -m 1 -E -o ".{0,0}\"OffersCount\".{0,4}" $html | awk '{sub(":", " "); sub(",", " "); print $2}')
+	#price=$(grep -m 1 -E -o ".{0,0}\"LowestPrice\".{0,6}" $html | awk 'BEGIN{FS=":"} {print $2}' | awk '{sub(",", ""); print}')
+	#offers=$(grep -m 1 -E -o ".{0,0}\"OffersCount\".{0,4}" $html | awk '{sub(":", " "); sub(",", " "); print $2}')
+	price=$(grep -m 1 -E -o ".{0,0}minPrice\",\".{0,6}" $html | awk 'BEGIN{FS="\""} {print $3}')
+	offers=$(grep -m 1 -E -o ".{0,0}offersNo\",\".{0,3}" $html | awk 'BEGIN{FS="\""} {print $3}')
 	echo $date $offers $price >> Data/$isbn.dat
 
 	if [ ! -e ./Data/$isbn.info ]; then
