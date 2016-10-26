@@ -6,6 +6,9 @@ import os.path
 from pylab import *
 from scipy import stats,polyfit
 
+import mysql.connector
+from mysql.connector import errorcode
+
 
 
 def Time(t1,t2,t3,t4,t5,t6):
@@ -39,11 +42,32 @@ def ChangeZero(A):
 			price = A[i]
 		B.append(price)
 	return B
-	
 
 inputfile = sys.argv[1]
-#source = open(inputfile, "r")
-my_data = np.genfromtxt(inputfile, usecols=np.arange(0,8))
+isbn = (inputfile.replace(".dat", "")).replace("Data/", "")
+
+cnx = mysql.connector.connect(user='nadirsky', password='a', database='white_ravens')
+cursor = cnx.cursor()
+query = ("SELECT * FROM book" + isbn)
+cursor.execute(query)
+
+t = []
+n = []
+p0 = []
+p = []
+
+for (Year, Month, Day, Hour, Minute, Second, Offers, MinPrice) in cursor:
+	t.append(Time(Year, Month, Day, Hour, Minute, Second))
+	n.append(Offers)
+	p0.append(MinPrice)
+
+cursor.close()
+cnx.close()
+
+p = ChangeZero(p0)
+
+
+"""my_data = np.genfromtxt(inputfile, usecols=np.arange(0,8))
 t1 = my_data[:,0]
 t2 = my_data[:,1]
 t3 = my_data[:,2]
@@ -56,13 +80,11 @@ t = []
 
 for i in range(0, len(n)):
 	t.append(Time(int(t1[i]),int(t2[i]),int(t3[i]),int(t4[i]),int(t5[i]),int(t6[i])))
-
+"""
 
 nAverage3 = Average3(n)
 
 	
-
-#sourceA = open(inputfile.replace(".dat", ".alle"), "r")
 my_data2 = np.genfromtxt(inputfile.replace(".dat", ".alle"), usecols=np.arange(0,8))
 tA1 = my_data2[:,0]
 tA2 = my_data2[:,1]
