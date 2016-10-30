@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-SearchCeneo()
+SearchCeneoWithISBN()
 {
     press="Publishing/Vesper"
     cp $press.isbn $press.isbn2 
@@ -31,6 +31,36 @@ SearchCeneo()
       done < $press.isbn
     sort -u $press.dat2 > $press.dat 
     rm $press.dat2
+}
+
+SearchCeneo()
+{
+	html="Tmp/html2.dat"
+	ceneoNew="Tmp/CeneoNew.dat"
+	ceneo="Ceneo/Ceneo.dat"
+	ceneoTmp="Tmp/CeneoTmp.dat"
+
+	for i in {0..52..4}
+	do
+		j=$(echo "$i+5" | bc)
+		for k in {0..99}
+		do
+			echo $i $k
+			wget -q -O $html "http://www.ceneo.pl/Fantastyka_i_fantasy;m$i;n$j;0020-30-0-0-$k;0112-0.htm"
+			grep -E -o ".{0,0}  data-pid=.{0,15}" $html | awk 'BEGIN{FS="\""} {print "http://www.ceneo.pl/"$2}' >> $ceneoNew		
+		done
+	done
+	
+	for k in {0..99}
+	do
+		echo $k
+		wget -q -O $html "http://www.ceneo.pl/Fantastyka_i_fantasy;m52;0020-30-0-0-$k;0112-0.htm"
+		grep -E -o ".{0,0}  data-pid=.{0,15}" $html | awk 'BEGIN{FS="\""} {print "http://www.ceneo.pl/"$2}' >> $ceneoNew		
+	done
+
+	cat $ceneoNew $ceneo > $ceneoTmp
+	sort -u $ceneoTmp > $ceneo
+	rm $ceneoNew $ceneoTmp	
 }
 
 SearchCeneo

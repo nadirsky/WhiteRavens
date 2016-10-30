@@ -98,8 +98,19 @@ tA = []
 for i in range(0, len(nA)):
 	tA.append(Time(int(tA1[i]),int(tA2[i]),int(tA3[i]),int(tA4[i]),int(tA5[i]),int(tA6[i])))
 
-info = open(inputfile.replace(".dat", "") + ".info", 'r')
-infoLine = info.readline()
+#info = open(inputfile.replace(".dat", "") + ".info", 'r')
+#infoLine = info.readline()
+
+cnx = mysql.connector.connect(user='nadirsky', password='a', database='white_ravens')
+cursor = cnx.cursor()
+query = ("SELECT * FROM books WHERE ISBN =" + isbn)
+cursor.execute(query)
+
+for (ISBN, Title, Author, Binding, Publishing, Premiere, Address) in cursor:
+	infoLine = ISBN + "\t" + Title + "\t" + Author + "\t" + Publishing + "\t" + Binding + "\t" + Premiere + "\t" + Address + "\n"
+
+cursor.close()
+cnx.close()
 
 
 #PredictionCheck for white reavens
@@ -129,6 +140,9 @@ for i in range(0, len(n)):
 			plt.ylabel(r'$\mathrm{Precision}$')
 			plt.savefig("PredictionCheck/" + (inputfile.replace(".dat", "")).replace("Data/", "")+'PredictionCheck.png')
 		break
+
+
+
 
 #Prediction
 nP = []
