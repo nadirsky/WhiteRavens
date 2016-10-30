@@ -84,7 +84,7 @@ for i in range(0, len(n)):
 
 nAverage3 = Average3(n)
 
-	
+"""	
 my_data2 = np.genfromtxt(inputfile.replace(".dat", ".alle"), usecols=np.arange(0,8))
 tA1 = my_data2[:,0]
 tA2 = my_data2[:,1]
@@ -97,7 +97,7 @@ pA = my_data2[:,7]
 tA = []
 for i in range(0, len(nA)):
 	tA.append(Time(int(tA1[i]),int(tA2[i]),int(tA3[i]),int(tA4[i]),int(tA5[i]),int(tA6[i])))
-
+"""
 #info = open(inputfile.replace(".dat", "") + ".info", 'r')
 #infoLine = info.readline()
 
@@ -204,7 +204,7 @@ if(predictionMean != 0 and predictionMean < t[len(t)-1] + 60 and n[len(n)-1] <= 
 	plt.rc('text', usetex=True)
 
 	ax1.plot(t,p,'-',linewidth=3.0,color="b",label=r'price')
-	ax1.plot(tA,pA,'.',linewidth=3.0,color="b",label=r'price')
+	#ax1.plot(tA,pA,'.',linewidth=3.0,color="b",label=r'price')
 	ax1.set_ylabel(r'Price', color='b')
 	ax1.set_ylim(0,100)
 	for tl in ax1.get_yticklabels():
@@ -213,7 +213,7 @@ if(predictionMean != 0 and predictionMean < t[len(t)-1] + 60 and n[len(n)-1] <= 
 	ax2 = ax1.twinx()
 	#ax2.plot(t,n,'.',linewidth=1.0,color="g",label=r'number')
 	ax2.plot(t,nAverage3,'-',linewidth=1.0,color="g",label=r'number')
-	ax2.plot(tA,nA,'--',linewidth=1.0,color="g",label=r'number')
+	#ax2.plot(tA,nA,'--',linewidth=1.0,color="g",label=r'number')
 	ax2.plot(t,nr,'-',linewidth=2.0,color="g",label=r'numberLine')
 	ax2.plot(prediction,[0]*len(prediction),'o',linewidth=1.0,color="r",label=r'')
 	ax2.plot(predictionMean,[0],'o',linewidth=1.0,color="g",label=r'')

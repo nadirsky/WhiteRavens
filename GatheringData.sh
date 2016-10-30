@@ -54,22 +54,22 @@ GatheringData()
 
 	GetBookInfo
 
-	if [ ! -e ./Data/$isbn.allegro ]; then
-		title=$(grep -m 1 -E -o ".{0,0}<title>.{0,50}" $html | awk 'BEGIN{FS="-"} {print $1}' | awk 'BEGIN{FS=">"} {print $2}' | awk '{gsub(/ /,"+")} {print}' )
-		author=$(grep -m 1 -E -o ".{0,0}Autor: .{0,50}" $html | awk 'BEGIN{FS="\""} {print $1}' | awk 'BEGIN{FS=":"} {print $2}' | awk '{gsub(/ /,"+")} {print}')
-        	echo "http://allegro.pl/ksiazki-i-komiksy?id=7&order=m&string="$title$author > Data/$isbn.allegro
-	fi
+	#if [ ! -e ./Data/$isbn.allegro ]; then
+	#	title=$(grep -m 1 -E -o ".{0,0}<title>.{0,50}" $html | awk 'BEGIN{FS="-"} {print $1}' | awk 'BEGIN{FS=">"} {print $2}' | awk '{gsub(/ /,"+")} {print}' )
+	#	author=$(grep -m 1 -E -o ".{0,0}Autor: .{0,50}" $html | awk 'BEGIN{FS="\""} {print $1}' | awk 'BEGIN{FS=":"} {print $2}' | awk '{gsub(/ /,"+")} {print}')
+        #	echo "http://allegro.pl/ksiazki-i-komiksy?id=7&order=m&string="$title$author > Data/$isbn.allegro
+	#fi
 
-	wget -q -O $html -i Data/$isbn.allegro
-	priceAllegro=$(grep -E -o ".{0,7} zł.{0,0}" $html | awk '{gsub(/>/,"")} {gsub(/"/,"")} {print}' | awk 'NR == 1 || $1 < min {min = $1}END{print min}'| awk '{gsub(/,/,".")} {print}')
-	offersAllegro=$(grep -m 1 -E -o ".{0,0}\"resultsNum\": .{0,4}" $html | awk '{print $2}' | awk 'BEGIN{FS=","} {print $1}')
-	echo $date $offersAllegro $priceAllegro >> Data/$isbn.alle
+	#wget -q -O $html -i Data/$isbn.allegro
+	#priceAllegro=$(grep -E -o ".{0,7} zł.{0,0}" $html | awk '{gsub(/>/,"")} {gsub(/"/,"")} {print}' | awk 'NR == 1 || $1 < min {min = $1}END{print min}'| awk '{gsub(/,/,".")} {print}')
+	#offersAllegro=$(grep -m 1 -E -o ".{0,0}\"resultsNum\": .{0,4}" $html | awk '{print $2}' | awk 'BEGIN{FS=","} {print $1}')
+	#echo $date $offersAllegro $priceAllegro >> Data/$isbn.alle
 
-	awk '$1 ~ /2016/' Data/$isbn.dat > $temp
-	mv $temp Data/$isbn.dat
+	#awk '$1 ~ /2016/' Data/$isbn.dat > $temp
+	#mv $temp Data/$isbn.dat
 
-	awk 'NF>=8' Data/$isbn.alle > $temp
-	mv $temp Data/$isbn.alle
+	#awk 'NF>=8' Data/$isbn.alle > $temp
+	#mv $temp Data/$isbn.alle
 
         #echo "scale=4; $i/$lines.0" | bc
 	echo $line
