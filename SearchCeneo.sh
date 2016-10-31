@@ -33,20 +33,18 @@ SearchCeneoWithISBN()
     rm $press.dat2
 }
 
-SearchCeneo()
+SearchInSection()
 {
-	html="Tmp/html2.dat"
-	ceneoNew="Tmp/CeneoNew.dat"
-	ceneo="Ceneo/Ceneo.dat"
-	ceneoTmp="Tmp/CeneoTmp.dat"
+	maxPrice="52"
+	step="3"
 
-	for i in {0..52..4}
+	for i in {0..$maxPrice..$step}
 	do
-		j=$(echo "$i+5" | bc)
+		j=$(echo "$i+$step" | bc)
 		for k in {0..99}
 		do
 			echo $i $k
-			wget -q -O $html "http://www.ceneo.pl/Fantastyka_i_fantasy;m$i;n$j;0020-30-0-0-$k;0112-0.htm"
+			wget -q -O $html "http://www.ceneo.pl/$1;m$i;n$j;0020-30-0-0-$k;0112-0.htm"
 			grep -E -o ".{0,0}  data-pid=.{0,15}" $html | awk 'BEGIN{FS="\""} {print "http://www.ceneo.pl/"$2}' >> $ceneoNew		
 		done
 	done
@@ -54,13 +52,23 @@ SearchCeneo()
 	for k in {0..99}
 	do
 		echo $k
-		wget -q -O $html "http://www.ceneo.pl/Fantastyka_i_fantasy;m52;0020-30-0-0-$k;0112-0.htm"
+		wget -q -O $html "http://www.ceneo.pl/$1;m$maxPrice;0020-30-0-0-$k;0112-0.htm"
 		grep -E -o ".{0,0}  data-pid=.{0,15}" $html | awk 'BEGIN{FS="\""} {print "http://www.ceneo.pl/"$2}' >> $ceneoNew		
 	done
+}
 
-	cat $ceneoNew $ceneo > $ceneoTmp
-	sort -u $ceneoTmp > $ceneo
-	rm $ceneoNew $ceneoTmp	
+SearchCeneo()
+{
+	html="Tmp/html2.dat"
+	ceneoNew="Tmp/CeneoNew.dat"
+	ceneo="Ceneo/Ceneo.dat"
+
+	rm $ceneoNew
+	SearchInSection	"Fantastyka_i_fantasy"
+	SearchInSection "Literatura_sensacyjna_i_grozy"
+	SearchInSection "Powiesci_i_opowiadania"
+
+	cat $ceneoNew $ceneo | sort -u > $ceneo
 }
 
 SearchCeneo

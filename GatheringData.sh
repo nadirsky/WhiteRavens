@@ -48,7 +48,7 @@ GatheringData()
 	offers=$(grep -m 1 -E -o ".{0,0}offersNo\",\".{0,3}" $html | awk 'BEGIN{FS="\""} {print $3}')
 	#echo $date $offers $price >> Data/$isbn.dat
 
-	#mysql --defaults-extra-file=./mysql.cnf white_ravens -e "CREATE TABLE IF NOT EXISTS book$isbn (Year int, Month int, Day int, Hour int, Minute int, Second int, Offers int, MinPrice float);"
+	mysql --defaults-extra-file=./mysql.cnf white_ravens -e "CREATE TABLE IF NOT EXISTS book$isbn (Year int, Month int, Day int, Hour int, Minute int, Second int, Offers int, MinPrice float);"
 	#mysql --defaults-extra-file=./mysql.cnf white_ravens -e "SELECT * FROM book$isbn ORDER BY Year, Month, Day, Hour, Minute, Second ASC;"
 	mysql --defaults-extra-file=./mysql.cnf white_ravens -e "INSERT INTO book$isbn VALUES ($date2,$offers,$price);"
 
@@ -71,7 +71,7 @@ GatheringData()
 	#awk 'NF>=8' Data/$isbn.alle > $temp
 	#mv $temp Data/$isbn.alle
 
-        #echo "scale=4; $i/$lines.0" | bc
+        echo "scale=4; $i/$lines.0" | bc
 	echo $line
 	i=$(echo "$i+1" | bc) 
 
