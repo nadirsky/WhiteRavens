@@ -24,14 +24,17 @@ def Time(t1,t2,t3,t4,t5,t6):
 	return B + 38. - E + t4/24. + t5/24./60. + t6/24./3600. - 2457600.0
 
 def Average3(A):
-	B = []
-	for i in range(0, len(A)):
-		if(i == 0): 
-			B.append((A[i]+A[i]+A[i+1])/3.)
-		elif(i == len(A)-1):
-			B.append((A[i-1]+A[i]+A[i])/3.)
-		else:
-			B.append((A[i-1]+A[i]+A[i+1])/3.)
+	if(len(A)<2):
+		B = A
+	else:
+		B = []
+		for i in range(0, len(A)):
+			if(i == 0): 
+				B.append((A[i]+A[i]+A[i+1])/3.)
+			elif(i == len(A)-1):
+				B.append((A[i-1]+A[i]+A[i])/3.)
+			else:
+				B.append((A[i-1]+A[i]+A[i+1])/3.)
 	return B
 
 def ChangeZero(A):
@@ -44,7 +47,8 @@ def ChangeZero(A):
 	return B
 
 inputfile = sys.argv[1]
-isbn = (inputfile.replace(".dat", "")).replace("Data/", "")
+#isbn = (inputfile.replace(".dat", "")).replace("Data/", "")
+isbn = inputfile.replace("book", "")
 
 cnx = mysql.connector.connect(user='nadirsky', password='a', database='white_ravens')
 cursor = cnx.cursor()
@@ -112,7 +116,7 @@ for (ISBN, Title, Author, Binding, Publishing, Premiere, Address) in cursor:
 cursor.close()
 cnx.close()
 
-
+"""
 #PredictionCheck for white reavens
 nCheck = []
 tCheck = []
@@ -140,7 +144,7 @@ for i in range(0, len(n)):
 			plt.ylabel(r'$\mathrm{Precision}$')
 			plt.savefig("PredictionCheck/" + (inputfile.replace(".dat", "")).replace("Data/", "")+'PredictionCheck.png')
 		break
-
+"""
 
 
 
@@ -148,9 +152,7 @@ for i in range(0, len(n)):
 nP = []
 tP = []
 prediction = []
-predictionY = []
 predictionMean = 0
-#predictionMeanY = 0
 predictionResult = 0
 aP = 0 
 bP = 0
@@ -162,13 +164,11 @@ if(len(n) > 5 and p[len(p)-1] > 15):
 			aP,bP = polyfit(tP,nP,1)			
 			if(aP < 0 and -bP/aP - t[len(t)-1] < 90 and -bP/aP - t[len(t)-1] > -50):
 				prediction.append(-bP/aP)
-				#predictionY.append(0)
 
 	if(len(prediction) > 0):
 		for k in range(0, len(prediction)):
 			predictionMean += prediction[k]
 		predictionMean /= len(prediction)
-		#predictionMeanY = 0
 
 		if(predictionMean < prediction[len(prediction)-1]):
 			predictionResult = predictionMean
