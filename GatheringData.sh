@@ -5,7 +5,7 @@ GetBookInfo()
 	title=$(grep -m 1 -E -o ".{0,0}<title>.{0,50}" $html | awk 'BEGIN{FS="-"} {print $1}' | awk 'BEGIN{FS=">"} {print $2}' | iconv -f utf-8 -t ascii//translit | sed 's/[!@#\$%^&*()'\'']//g')
 	author=$(grep -m 1 -E -o ".{0,0}SublineTags\">.{0,50}" $html | awk 'BEGIN{FS=">"} {print $2}' | awk 'BEGIN{FS=","} {print $1}' | iconv -f utf-8 -t ascii//translit | sed 's/[!@#\$%^&*()'\'']//g')
 	publishing=$(grep -m 1 -E -o ".{0,0}wydawnictwo: .{0,50}" $html | awk 'BEGIN{FS=": "} {print $2}' | awk 'BEGIN{FS="<"} {print $1}' | iconv -f utf-8 -t ascii//translit |sed 's/[!@#\$%^&*()'\'']//g')
-	binding=$(grep -m 1 -E -o ".{0,0}oprawa.{0,20}" $html | awk 'BEGIN{FS=","} {print $1}'| awk 'BEGIN{FS=" "} {print $2}' | iconv -f utf-8 -t ascii//translit | sed 's/[!@#\$%^&*()'\'']//g')
+	binding=$(grep -m 1 -E -o ".{0,0}oprawa.{0,20}" $html | awk 'BEGIN{FS=","} {print $1}'| awk 'BEGIN{FS=" "} {print $2}' | iconv -f utf-8 -t ascii//translit | sed 's/[!@#\$%^&*()'\'']//g'|  awk '{print tolower($0)}')
 	premiere=$(grep -m 1 -E -o ".{0,0}rok wydania.{0,8}" $html | awk 'BEGIN{FS=","} {print $1}' | awk 'BEGIN{FS=" "} {print $3}' | iconv -f utf-8 -t ascii//translit | sed 's/[!@#\$%^&*()'\'']//g')
 	echo $isbn $title $author $publishing $binding $premiere $address
 
@@ -18,7 +18,7 @@ CheckISBN()
 	local is=$1
 	local len=$(echo ${#is})
 	local re='^[0-9]+$'
-	if [[ $1 =~ $re0 && $len == "13" ]]; then
+	if [[ $len == "13" && $1 =~ $re0 ]]; then
    		local odd=$(echo $1 | awk '{print substr($1,1,1) "+" substr($1,3,1) "+" substr($1,5,1) "+" substr($1,7,1) "+" substr($1,9,1) "+" substr($1,11,1)}' | bc)
 		local even=$(echo $1 | awk '{print substr($1,2,1) "+" substr($1,4,1) "+" substr($1,6,1) "+" substr($1,8,1) "+" substr($1,10,1) "+" substr($1,12,1)}' | bc)
 		local checkSum=$(echo "(10 - (($odd + 3*$even) % 10)) % 10" | bc)

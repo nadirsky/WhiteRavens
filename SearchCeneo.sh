@@ -35,10 +35,10 @@ SearchCeneoWithISBN()
 
 SearchInSection()
 {
-	maxPrice="52"
-	step="3"
+	maxPrice=52
+	step=3
 
-	for i in {0..$maxPrice..$step}
+	for i in {0..52..3}
 	do
 		j=$(echo "$i+$step" | bc)
 		for k in {0..99}
