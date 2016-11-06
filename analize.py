@@ -183,15 +183,15 @@ if(len(n) > 5 and p[len(p)-1] > 15):
 				checked = open(checkedPath, 'r')
 				checkedValue = checked.readline()
 				if(int(checkedValue) == 1):			
-					plikPred = open("prediction.dat2", 'a')
+					plikPred = open("Tmp/prediction.dat2", 'a')
 					plikPred.writelines(str(predictionResult-t[len(t)-1]) + " " + str(n[len(n)-1]) + " " +  infoLine)
 					plikPred.close()
 				elif(int(checkedValue) == 0):
-					plikPred = open("predictionTrash.dat2", 'a')
+					plikPred = open("Tmp/predictionTrash.dat2", 'a')
 					plikPred.writelines(str(predictionResult-t[len(t)-1]) + " " + str(n[len(n)-1]) + " " + infoLine)
 					plikPred.close()
 			except:
-				plikPred = open("predictionToCheck.dat2", 'a')
+				plikPred = open("Tmp/predictionToCheck.dat2", 'a')
 				plikPred.writelines(str(predictionResult-t[len(t)-1]) + " " + str(n[len(n)-1]) + " " + infoLine)
 				plikPred.close()
 							
@@ -231,7 +231,7 @@ if(predictionMean != 0 and predictionMean < t[len(t)-1] + 60 and n[len(n)-1] <= 
 
 #Sale 
 if(p[len(p)-1]<0.8*p[len(p)-2] and n[len(n)-1] != 0):
-	plik = open("Sale.dat2", 'a')
+	plik = open("Tmp/Sale.dat2", 'a')
 	plik.writelines(str(p[len(p)-1]/p[len(p)-2]) + " " + infoLine)
 	plik.close()
 

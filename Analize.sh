@@ -3,7 +3,7 @@
 Analize()
 {
 	list="Tmp/list"
-	rm Sale.dat Prediction.dat PredictionTrash.dat PredictionToCheck.dat Plot/*.png PredictionCheck/*.png
+	rm Results/Sale.dat Results/Prediction.dat Results/PredictionTrash.dat Results/PredictionToCheck.dat Plot/*.png PredictionCheck/*.png
 	
 
 	mysql --defaults-extra-file=./mysql.cnf white_ravens -N -e "SHOW TABLES LIKE '%book978%'" > $list
@@ -20,11 +20,11 @@ Analize()
 	i=$(echo "$i+1" | bc) 
 	done < $list
 
-	sort -n prediction.dat2 > Prediction.dat
-	sort -n predictionTrash.dat2 > PredictionTrash.dat
-	sort -n predictionToCheck.dat2 > PredictionToCheck.dat
-	sort -n Sale.dat2 > Sale.dat
-	rm Sale.dat2 prediction.dat2 predictionTrash.dat2 predictionToCheck.dat2
+	sort -n Tmp/prediction.dat2 > Results/Prediction.dat
+	sort -n Tmp/predictionTrash.dat2 > Results/PredictionTrash.dat
+	sort -n Tmp/predictionToCheck.dat2 > Results/PredictionToCheck.dat
+	sort -n Tmp/Sale.dat2 > Results/Sale.dat
+	rm Tmp/Sale.dat2 Tmp/prediction.dat2 Tmp/predictionTrash.dat2 Tmp/predictionToCheck.dat2
 }
 
 ChangeSign()
