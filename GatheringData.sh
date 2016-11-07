@@ -30,7 +30,7 @@ CheckISBN()
 	local is=$1
 	local len=$(echo ${#is})
 	local re='^[0-9]+$'
-	if [[ $len == "13" && $1 =~ $re0 ]]; then
+	if [[ $len == "13" && $1 =~ $re ]]; then
    		local odd=$(echo $1 | awk '{print substr($1,1,1) "+" substr($1,3,1) "+" substr($1,5,1) "+" substr($1,7,1) "+" substr($1,9,1) "+" substr($1,11,1)}' | bc)
 		local even=$(echo $1 | awk '{print substr($1,2,1) "+" substr($1,4,1) "+" substr($1,6,1) "+" substr($1,8,1) "+" substr($1,10,1) "+" substr($1,12,1)}' | bc)
 		local checkSum=$(echo "(10 - (($odd + 3*$even) % 10)) % 10" | bc)

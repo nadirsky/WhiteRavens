@@ -5,20 +5,21 @@ Analize()
 	list="Tmp/list"
 	rm Results/Sale.dat Results/Prediction.dat Results/PredictionTrash.dat Results/PredictionToCheck.dat Plot/*.png PredictionCheck/*.png
 	
-
 	mysql --defaults-extra-file=./mysql.cnf white_ravens -N -e "SHOW TABLES LIKE '%book978%'" > $list
 
 	#find Data/978*.dat > ISBN.list
 	lines=$(wc -l < $list)
 	i="0"
 
-	while read line;
-	do
-	python analize.py $line	
-	echo "scale=4; $i/$lines.0" | bc
-	echo $line
-	i=$(echo "$i+1" | bc) 
-	done < $list
+	python analize.py $list
+
+	#while read line;
+	#do
+	#python analize.py $line	
+	#echo "scale=4; $i/$lines.0" | bc
+	#echo $line
+	#i=$(echo "$i+1" | bc) 
+	#done < $list
 
 	sort -n Tmp/prediction.dat2 > Results/Prediction.dat
 	sort -n Tmp/predictionTrash.dat2 > Results/PredictionTrash.dat
