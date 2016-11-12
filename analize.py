@@ -1,6 +1,6 @@
 import sys
 import math
-import threading
+#import threading
 from multiprocessing import Pool
 from multiprocessing.dummy import Pool as ThreadPool
 #import datetime 
@@ -208,7 +208,7 @@ def ThreadFunction(isbn):
 
 	prediction, predictionMean, predictionResult, aP, bP = Prediction(t, n, p, isbn, infoLine)
 	
-	Plot(t, n, p, prediction, predictionMean, predictionResult, aP, bP, nAverage3, infoLine, isbn)
+	#Plot(t, n, p, prediction, predictionMean, predictionResult, aP, bP, nAverage3, infoLine, isbn)
 	Sale(n, p, infoLine)
 
 
@@ -217,7 +217,7 @@ ISBN = []
 for line in f:
 	ISBN.append(line.replace("book", "")[:13])
 
-pool = ThreadPool(8)
+pool = ThreadPool(12)
 pool.map(ThreadFunction, ISBN)
 pool.close() 
 pool.join() 

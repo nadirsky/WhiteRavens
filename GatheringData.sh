@@ -6,7 +6,7 @@ GetBookInfo()
 	author=$(grep -m 1 -E -o ".{0,0}SublineTags\">.{0,50}" $html | awk 'BEGIN{FS=">"} {print $2}' | awk 'BEGIN{FS=","} {print $1}' | iconv -f utf-8 -t ascii//translit | sed 's/[!@#\$%^&*()'\'']//g')
 	publishing=$(grep -m 1 -E -o ".{0,0}wydawnictwo: .{0,50}" $html | awk 'BEGIN{FS=": "} {print $2}' | awk 'BEGIN{FS="<"} {print $1}' | iconv -f utf-8 -t ascii//translit |sed 's/[!@#\$%^&*()'\'']//g')
 	binding=$(grep -m 1 -E -o ".{0,0}oprawa.{0,20}" $html | awk 'BEGIN{FS=","} {print $1}'| awk 'BEGIN{FS=" "} {print $2}' | iconv -f utf-8 -t ascii//translit | sed 's/[!@#\$%^&*()'\'']//g'|  awk '{print tolower($0)}')
-	premiere=$(grep -m 1 -E -o ".{0,0}rok wydania.{0,8}" $html | awk 'BEGIN{FS=","} {print $1}' | awk 'BEGIN{FS=" "} {print $3}' | iconv -f utf-8 -t ascii//translit | sed 's/[!@#\$%^&*()'\'']//g')
+	premiere=$(grep -m 1 -E -o ".{0,0}rok wydania.{0,11}" $html | awk 'BEGIN{FS=","} {print $1}' | awk 'BEGIN{FS=" "} {print $3}' | iconv -f utf-8 -t ascii//translit | sed 's/[!@#\$%^&*()'\'']//g')
 	echo $isbn $title $author $publishing $binding $premiere $address
 
 	#mysql --defaults-extra-file=./mysql.cnf white_ravens -e "CREATE TABLE IF NOT EXISTS books(ISBN varchar(13) NOT NULL,Title tinytext,Author tinytext,Publishing tinytext,Binding tinytext,Premiere tinytext,Address tinytext,PRIMARY KEY (ISBN));"
@@ -46,14 +46,15 @@ CheckISBN()
 
 GatheringData()
 {
-	database0="Ceneo/Publishing.dat"
-	databaseCeneo="Ceneo/Ceneo.dat"
+	#database0="Ceneo/Publishing.dat"
+	#databaseCeneo="Ceneo/Ceneo.dat"
+	database0="Ceneo/Ceneo.dat"
 	database="Tmp/Publishing.dat"
-	databaseTmp="Tmp/temp"
+	#databaseTmp="Tmp/temp"
 	html="Tmp/html.dat"
 	temp="Tmp/temp"
-	cat Publishing/Mag.dat Publishing/Rebis.dat Publishing/Znak.dat Publishing/Zysk.dat Publishing/Publicat.dat Publishing/Literackie.dat Publishing/Olesiejuk.dat Publishing/Proszynski.dat Publishing/FabrykaSlow.dat Publishing/Solaris.dat Publishing/Vesper.dat | awk '{print $2}' > $databaseTmp
-	cat $databaseTmp $databaseCeneo | sort -u > $database0
+	#cat Publishing/Mag.dat Publishing/Rebis.dat Publishing/Znak.dat Publishing/Zysk.dat Publishing/Publicat.dat Publishing/Literackie.dat Publishing/Olesiejuk.dat Publishing/Proszynski.dat Publishing/FabrykaSlow.dat Publishing/Solaris.dat Publishing/Vesper.dat | awk '{print $2}' > $databaseTmp
+	#cat $databaseTmp $databaseCeneo | sort -u > $database0
 
 
 	lines0=$(wc -l < $database0)

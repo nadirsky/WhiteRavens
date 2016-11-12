@@ -1,7 +1,7 @@
-all: gatheringData analize
+all: gatherData analize
 
-gatheringData:
-	./GatheringData.sh
+gatherData:
+	python gather.py
 
 analize:
 	./Analize.sh
