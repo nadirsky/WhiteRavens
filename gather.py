@@ -14,7 +14,7 @@ def MakeList():
 
 	bash = []
 	for (ISBN, Address) in cursor:
-		bashCommand = "./GatherData.sh " + ISBN + " " + Address + " Tmp/html" + ISBN + ".dat"
+		bashCommand = "./GatherData.sh " + ISBN + " " + Address
 		bash.append(bashCommand)
 
 	cursor.close()
@@ -27,4 +27,4 @@ def Multithreading(threads):
 	pool.close() 
 	pool.join() 
 
-Multithreading(16)
+Multithreading(10)

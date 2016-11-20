@@ -73,6 +73,7 @@ def ReadData(isbn):
 	return t, n, p
 
 def InfoLine(isbn):
+	infoLine = ""
 	cnx = mysql.connector.connect(user='nadirsky', password='a', database='white_ravens')
 	cursor = cnx.cursor()
 	query = ("SELECT * FROM books WHERE ISBN =" + isbn)
@@ -141,9 +142,11 @@ def Prediction(t, n, p, isbn, infoLine):
 				predictionResult = prediction[len(prediction)-1]
 
 			if(predictionResult < t[len(t)-1] + 60 and n[len(n)-1] > 0 and n[len(n)-1] <= 6 and p[len(p)-1] > 15):
-			
-
-				checkedPath = "Checked/" + isbn
+				plikPred = open("Tmp/predictionToCheck.dat2", 'a')
+				plikPred.writelines(str(aP*100000) + " " + str(predictionResult-t[len(t)-1]) + " " + str(n[len(n)-1]) + " " + infoLine)
+				plikPred.close()
+				
+				"""checkedPath = "Checked/" + isbn
 				try:
 					checked = open(checkedPath, 'r')
 					checkedValue = checked.readline()
@@ -158,10 +161,24 @@ def Prediction(t, n, p, isbn, infoLine):
 				except:
 					plikPred = open("Tmp/predictionToCheck.dat2", 'a')
 					plikPred.writelines(str(predictionResult-t[len(t)-1]) + " " + str(n[len(n)-1]) + " " + infoLine)
-					plikPred.close()
+					plikPred.close()"""
 	return prediction, predictionMean, predictionResult, aP, bP
 
-def Plot(t, n, p, prediction, predictionMean, predictionResult, aP, bP, nAverage3, infoLine, isbn):
+def Plot(data):
+	t = data[0]
+	n = data[1]
+	p = data[2]
+	prediction = data[3]
+	predictionMean = data[4]
+	predictionResult = data[5]
+	aP = data[6]
+	bP = data[7]
+	nAverage3 = data[8]
+	infoLine = data[9]
+	#isbn = data[10]
+
+	#print(t, n, p, prediction, predictionMean, predictionResult, aP, bP, nAverage3, infoLine, isbn)
+
 	nr=polyval([aP,bP],t)
 	if(predictionMean != 0 and predictionMean < t[len(t)-1] + 60 and n[len(n)-1] <= 10):
 		#plt.clf()
@@ -188,9 +205,9 @@ def Plot(t, n, p, prediction, predictionMean, predictionResult, aP, bP, nAverage
 		for tl in ax2.get_yticklabels():
 	    		tl.set_color('g')
 
-		plt.title(isbn)	
+		#plt.title(isbn)	
 		ax1.set_xlabel(r'$\mathrm{time [JD - JD_{0}]}$')
-		plt.savefig("Plot/" + isbn + '.png')
+		plt.savefig("Plot/" + infoLine[:13] + '.png')
 		plt.close(fig)
 
 def Sale(n, p, infoLine): 
@@ -210,17 +227,23 @@ def ThreadFunction(isbn):
 	
 	#Plot(t, n, p, prediction, predictionMean, predictionResult, aP, bP, nAverage3, infoLine, isbn)
 	Sale(n, p, infoLine)
+	return t, n, p, prediction, predictionMean, predictionResult, aP, bP, nAverage3, infoLine, isbn
 
 
 f = open(sys.argv[1], 'r')
 ISBN = []
 for line in f:
 	ISBN.append(line.replace("book", "")[:13])
+	print(line.replace("book", "")[:13])
 
+PlotData = []
 pool = ThreadPool(12)
-pool.map(ThreadFunction, ISBN)
+PlotData = pool.map(ThreadFunction, ISBN)
 pool.close() 
-pool.join() 
+pool.join()
+
+for i in range(len(PlotData)-1):
+	Plot(PlotData[i]) 
 
 
 
