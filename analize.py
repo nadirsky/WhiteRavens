@@ -80,7 +80,7 @@ def InfoLine(isbn):
 	cursor.execute(query)
 
 	for (ISBN, Title, Author, Binding, Publishing, Premiere, Address) in cursor:
-		infoLine = ISBN + "\t" + Title + "\t" + Author + "\t" + Publishing + "\t" + Binding + "\t" + Premiere + "\t" + Address + "\n"
+		infoLine = ISBN + "\t" + Publishing + "\t"  + Binding + "\t" + Title + "\t" + Author + "\t"  + Premiere + "\t" + Address + "\n"
 
 	cursor.close()
 	cnx.close()
@@ -143,25 +143,9 @@ def Prediction(t, n, p, isbn, infoLine):
 
 			if(predictionResult < t[len(t)-1] + 60 and n[len(n)-1] > 0 and n[len(n)-1] <= 6 and p[len(p)-1] > 15):
 				plikPred = open("Tmp/predictionToCheck.dat2", 'a')
-				plikPred.writelines(str(aP*100000) + " " + str(predictionResult-t[len(t)-1]) + " " + str(n[len(n)-1]) + " " + infoLine)
+				plikPred.writelines(str(aP*100000)[:7] + " " + str(predictionResult-t[len(t)-1])[:3] + " " + str(n[len(n)-1]) + " " + infoLine)
 				plikPred.close()
 				
-				"""checkedPath = "Checked/" + isbn
-				try:
-					checked = open(checkedPath, 'r')
-					checkedValue = checked.readline()
-					if(int(checkedValue) == 1):			
-						plikPred = open("Tmp/prediction.dat2", 'a')
-						plikPred.writelines(str(predictionResult-t[len(t)-1]) + " " + str(n[len(n)-1]) + " " +  infoLine)
-						plikPred.close()
-					elif(int(checkedValue) == 0):
-						plikPred = open("Tmp/predictionTrash.dat2", 'a')
-						plikPred.writelines(str(predictionResult-t[len(t)-1]) + " " + str(n[len(n)-1]) + " " + infoLine)
-						plikPred.close()
-				except:
-					plikPred = open("Tmp/predictionToCheck.dat2", 'a')
-					plikPred.writelines(str(predictionResult-t[len(t)-1]) + " " + str(n[len(n)-1]) + " " + infoLine)
-					plikPred.close()"""
 	return prediction, predictionMean, predictionResult, aP, bP
 
 def Plot(data):
@@ -225,7 +209,6 @@ def ThreadFunction(isbn):
 
 	prediction, predictionMean, predictionResult, aP, bP = Prediction(t, n, p, isbn, infoLine)
 	
-	#Plot(t, n, p, prediction, predictionMean, predictionResult, aP, bP, nAverage3, infoLine, isbn)
 	Sale(n, p, infoLine)
 	return t, n, p, prediction, predictionMean, predictionResult, aP, bP, nAverage3, infoLine, isbn
 
