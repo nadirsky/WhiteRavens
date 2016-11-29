@@ -7,25 +7,10 @@ Analize()
 	
 	mysql --defaults-extra-file=./mysql.cnf white_ravens -N -e "SHOW TABLES LIKE '%book978%'" > $list
 
-	#find Data/978*.dat > ISBN.list
-	lines=$(wc -l < $list)
-	i="0"
-
 	python analize.py $list
 
-	#while read line;
-	#do
-	#python analize.py $line	
-	#echo "scale=4; $i/$lines.0" | bc
-	#echo $line
-	#i=$(echo "$i+1" | bc) 
-	#done < $list
-
-	#sort -n Tmp/prediction.dat2 > Results/Prediction.dat
-	#sort -n Tmp/predictionTrash.dat2 > Results/PredictionTrash.dat
 	sort -t$'\t' -k5,5 -k1,1n Tmp/predictionToCheck.dat2 > Results/PredictionToCheck.dat
-	sort -n Tmp/Sale.dat2 > Results/Sale.dat
-	#rm Tmp/Sale.dat2 Tmp/prediction.dat2 Tmp/predictionTrash.dat2 Tmp/predictionToCheck.dat2
+	sort -t$'\t' -k3,3 -k1,1n Tmp/Sale.dat2 > Results/Sale.dat
 	rm Tmp/Sale.dat2 Tmp/predictionToCheck.dat2
 }
 

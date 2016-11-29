@@ -15,13 +15,11 @@ GetBookInfo()
 
 GetOffersAndPrice()
 {
-	#date=$(grep -m 1 -E -o ".{0,0}now: new Date.{0,25}" $html | awk 'BEGIN{FS="("} {print $2}' | awk 'BEGIN{FS=","} {print $1, $2, $3, $4, $5, $6}')
 	date=$(grep -m 1 -E -o ".{0,0}now: new Date.{0,25}" $html | awk 'BEGIN{FS="("} {print $2}' | awk 'BEGIN{FS=","} {print $1 "," $2 "," $3 "," $4 "," $5 "," $6}')		
 	price=$(grep -m 1 -E -o ".{0,0}minPrice\",\".{0,6}" $html | awk 'BEGIN{FS="\""} {print $3}')
 	offers=$(grep -m 1 -E -o ".{0,0}offersNo\",\".{0,3}" $html | awk 'BEGIN{FS="\""} {print $3}')
 
 	mysql --defaults-extra-file=./mysql.cnf white_ravens -e "CREATE TABLE IF NOT EXISTS book$isbn (Year int, Month int, Day int, Hour int, Minute int, Second int, Offers int, MinPrice float);"
-	#mysql --defaults-extra-file=./mysql.cnf white_ravens -e "SELECT * FROM book$isbn ORDER BY Year, Month, Day, Hour, Minute, Second ASC;"
 	mysql --defaults-extra-file=./mysql.cnf white_ravens -e "INSERT INTO book$isbn VALUES ($date,$offers,$price);"
 }
 
@@ -46,15 +44,10 @@ CheckISBN()
 
 GatheringData()
 {
-	#database0="Ceneo/Publishing.dat"
-	#databaseCeneo="Ceneo/Ceneo.dat"
 	database0="Ceneo/Ceneo.dat"
 	database="Tmp/Publishing.dat"
-	#databaseTmp="Tmp/temp"
 	html="Tmp/html.dat"
 	temp="Tmp/temp"
-	#cat Publishing/Mag.dat Publishing/Rebis.dat Publishing/Znak.dat Publishing/Zysk.dat Publishing/Publicat.dat Publishing/Literackie.dat Publishing/Olesiejuk.dat Publishing/Proszynski.dat Publishing/FabrykaSlow.dat Publishing/Solaris.dat Publishing/Vesper.dat | awk '{print $2}' > $databaseTmp
-	#cat $databaseTmp $databaseCeneo | sort -u > $database0
 
 
 	lines0=$(wc -l < $database0)

@@ -1,6 +1,5 @@
 import sys
 import math
-#import threading
 from multiprocessing import Pool
 from multiprocessing.dummy import Pool as ThreadPool
 #import datetime 
@@ -8,7 +7,6 @@ import numpy as np
 import os.path
 from pylab import *
 from scipy import stats,polyfit
-
 import mysql.connector
 #from mysql.connector import errorcode
 
@@ -49,6 +47,12 @@ def ChangeZero(A):
 		B.append(price)
 	return B
 
+def AveragePrice(A):
+	B = 0.
+	for i in range(0, len(A)):
+		B += A[i]
+	return B/len(A)
+
 def ReadData(isbn):
 	cnx = mysql.connector.connect(user='nadirsky', password='a', database='white_ravens')
 	cursor = cnx.cursor()
@@ -74,6 +78,7 @@ def ReadData(isbn):
 
 def InfoLine(isbn):
 	infoLine = ""
+	info = []
 	cnx = mysql.connector.connect(user='nadirsky', password='a', database='white_ravens')
 	cursor = cnx.cursor()
 	query = ("SELECT * FROM books WHERE ISBN =" + isbn)
@@ -81,10 +86,17 @@ def InfoLine(isbn):
 
 	for (ISBN, Title, Author, Publishing, Binding, Premiere, Address) in cursor:
 		infoLine = ISBN + "\t" + Publishing + "\t"  + Binding + "\t" + Title + "\t" + Author + "\t"  + Premiere + "\t" + Address + "\n"
+		info.append(ISBN)
+		info.append(Publishing)
+		info.append(Binding)
+		info.append(Title)
+		info.append(Author)
+		info.append(Premiere)
+		info.append(Address)
 
 	cursor.close()
 	cnx.close()
-	return infoLine
+	return infoLine, info
 
 def AccuracyOfPrediction():
 	nCheck = []
@@ -114,15 +126,16 @@ def AccuracyOfPrediction():
 				plt.savefig("PredictionCheck/" + (inputfile.replace(".dat", "")).replace("Data/", "")+'PredictionCheck.png')
 			break
 
-def Prediction(t, n, p, isbn, infoLine):
+def Prediction(t, n, p, isbn, infoLine, info):
 	nP = []
 	tP = []
+	averagePrice = AveragePrice(p)
 	prediction = []
 	predictionMean = 0
 	predictionResult = 0
 	aP = 0 
 	bP = 0
-	if(len(n) > 5 and p[len(p)-1] > 15):
+	if(len(n) > 5 and averagePrice > 20):
 		for j in range(0, len(n)):
 			nP.append(n[j])
 			tP.append(t[j])
@@ -141,7 +154,7 @@ def Prediction(t, n, p, isbn, infoLine):
 			else:
 				predictionResult = prediction[len(prediction)-1]
 
-			if(predictionResult < t[len(t)-1] + 60 and n[len(n)-1] > 0 and n[len(n)-1] <= 6 and p[len(p)-1] > 15):
+			if(predictionResult < t[len(t)-1] + 50 and n[len(n)-1] > 0 and n[len(n)-1] <= 6 and averagePrice > 20 and info[2] != "miekka"):
 				plikPred = open("Tmp/predictionToCheck.dat2", 'a')
 				plikPred.writelines(str(aP*100000)[:7] + "\t" + str(predictionResult-t[len(t)-1])[:3] + "\t" + str(n[len(n)-1]) + "\t" + infoLine)
 				plikPred.close()
@@ -159,12 +172,10 @@ def Plot(data):
 	bP = data[7]
 	nAverage3 = data[8]
 	infoLine = data[9]
-	#isbn = data[10]
 
-	#print(t, n, p, prediction, predictionMean, predictionResult, aP, bP, nAverage3, infoLine, isbn)
 
 	nr=polyval([aP,bP],t)
-	if(predictionMean != 0 and predictionMean < t[len(t)-1] + 60 and n[len(n)-1] <= 10):
+	if(predictionMean != 0 and predictionMean < t[len(t)-1] + 50 and n[len(n)-1] <= 6):
 		#plt.clf()
 		fig, ax1 = plt.subplots()
 		plt.rc('text', usetex=True)
@@ -197,7 +208,7 @@ def Plot(data):
 def Sale(n, p, infoLine): 
 	if(p[len(p)-1]<0.8*p[len(p)-2] and n[len(n)-1] != 0):
 		plik = open("Tmp/Sale.dat2", 'a')
-		plik.writelines(str(p[len(p)-1]/p[len(p)-2]) + " " + infoLine)
+		plik.writelines(str(p[len(p)-1]/p[len(p)-2])[:4] + "\t" + infoLine)
 		plik.close()
 
 def ThreadFunction(isbn):
@@ -205,9 +216,9 @@ def ThreadFunction(isbn):
 	t, n, p = ReadData(isbn)
 
 	nAverage3 = Average3(n)
-	infoLine = InfoLine(isbn)
+	infoLine, info = InfoLine(isbn)
 
-	prediction, predictionMean, predictionResult, aP, bP = Prediction(t, n, p, isbn, infoLine)
+	prediction, predictionMean, predictionResult, aP, bP = Prediction(t, n, p, isbn, infoLine, info)
 	
 	Sale(n, p, infoLine)
 	return t, n, p, prediction, predictionMean, predictionResult, aP, bP, nAverage3, infoLine, isbn
