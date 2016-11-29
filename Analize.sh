@@ -23,7 +23,7 @@ Analize()
 
 	#sort -n Tmp/prediction.dat2 > Results/Prediction.dat
 	#sort -n Tmp/predictionTrash.dat2 > Results/PredictionTrash.dat
-	sort -k5,5 -n -k1,1 Tmp/predictionToCheck.dat2 > Results/PredictionToCheck.dat
+	sort -t$'\t' -k5,5 -k1,1n Tmp/predictionToCheck.dat2 > Results/PredictionToCheck.dat
 	sort -n Tmp/Sale.dat2 > Results/Sale.dat
 	#rm Tmp/Sale.dat2 Tmp/prediction.dat2 Tmp/predictionTrash.dat2 Tmp/predictionToCheck.dat2
 	rm Tmp/Sale.dat2 Tmp/predictionToCheck.dat2

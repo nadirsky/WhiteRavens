@@ -79,7 +79,7 @@ def InfoLine(isbn):
 	query = ("SELECT * FROM books WHERE ISBN =" + isbn)
 	cursor.execute(query)
 
-	for (ISBN, Title, Author, Binding, Publishing, Premiere, Address) in cursor:
+	for (ISBN, Title, Author, Publishing, Binding, Premiere, Address) in cursor:
 		infoLine = ISBN + "\t" + Publishing + "\t"  + Binding + "\t" + Title + "\t" + Author + "\t"  + Premiere + "\t" + Address + "\n"
 
 	cursor.close()
@@ -143,7 +143,7 @@ def Prediction(t, n, p, isbn, infoLine):
 
 			if(predictionResult < t[len(t)-1] + 60 and n[len(n)-1] > 0 and n[len(n)-1] <= 6 and p[len(p)-1] > 15):
 				plikPred = open("Tmp/predictionToCheck.dat2", 'a')
-				plikPred.writelines(str(aP*100000)[:7] + " " + str(predictionResult-t[len(t)-1])[:3] + " " + str(n[len(n)-1]) + " " + infoLine)
+				plikPred.writelines(str(aP*100000)[:7] + "\t" + str(predictionResult-t[len(t)-1])[:3] + "\t" + str(n[len(n)-1]) + "\t" + infoLine)
 				plikPred.close()
 				
 	return prediction, predictionMean, predictionResult, aP, bP
