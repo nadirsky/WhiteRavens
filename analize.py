@@ -154,7 +154,7 @@ def Prediction(t, n, p, isbn, infoLine, info):
 			else:
 				predictionResult = prediction[len(prediction)-1]
 
-			if(predictionResult < t[len(t)-1] + 50 and n[len(n)-1] > 0 and n[len(n)-1] <= 6 and averagePrice > 20 and info[2] != "miekka"):
+			if(predictionResult < t[len(t)-1] + 50 and n[len(n)-1] > 0 and n[len(n)-1] <= 6 and averagePrice > 20 and info[2] != "miekka" and info[2] != "broszurowa"):
 				plikPred = open("Tmp/predictionToCheck.dat2", 'a')
 				plikPred.writelines(str(aP*100000)[:7] + "\t" + str(predictionResult-t[len(t)-1])[:3] + "\t" + str(n[len(n)-1]) + "\t" + infoLine)
 				plikPred.close()
