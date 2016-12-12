@@ -12,7 +12,7 @@ if [[ $date ]]; then
 	offers=$(echo "$html" | grep -m 1 -E ".{0,0}offers\",\"Value\":\".{0,3}" | awk 'BEGIN{FS="\""} {print $10}' | awk 'BEGIN{FS="\""} {print $1}')
 
 	if [[ $price && $offers ]]; then
-		#mysql --defaults-extra-file=./mysql.cnf white_ravens -e "SELECT * FROM book$isbn ORDER BY Year, Month, Day, Hour, Minute, Second ASC;"
+		mysql --defaults-extra-file=./mysql.cnf white_ravens -e "SELECT * FROM book$isbn ORDER BY Year, Month, Day, Hour, Minute, Second ASC;"
 		mysql --defaults-extra-file=./mysql.cnf white_ravens -e "INSERT INTO book$isbn VALUES ($date,$offers,$price);"
 	fi
 else

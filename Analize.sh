@@ -3,7 +3,7 @@
 Analize()
 {
 	list="Tmp/list"
-	rm Results/Sale.dat Results/PredictionToCheck.dat Plot/*.png
+	rm -f Results/Sale.dat Results/PredictionToCheck.dat Plot/*.png
 	
 	mysql --defaults-extra-file=./mysql.cnf white_ravens -N -e "SHOW TABLES LIKE '%book978%'" > $list
 
@@ -11,7 +11,7 @@ Analize()
 
 	sort -t$'\t' -k5,5 -k1,1n Tmp/predictionToCheck.dat2 > Results/PredictionToCheck.dat
 	sort -t$'\t' -k3,3 -k1,1n Tmp/Sale.dat2 > Results/Sale.dat
-	rm Tmp/Sale.dat2 Tmp/predictionToCheck.dat2
+	rm -f Tmp/Sale.dat2 Tmp/predictionToCheck.dat2
 }
 
 ChangeSign()
@@ -63,6 +63,8 @@ mysql --defaults-extra-file=./mysql.cnf white_ravens -e "UPDATE books SET $colum
 mysql --defaults-extra-file=./mysql.cnf white_ravens -e "UPDATE books SET $column = REPLACE($column, '<span>', '');"
 mysql --defaults-extra-file=./mysql.cnf white_ravens -e "UPDATE books SET $column = REPLACE($column, '243;', 'o');"
 mysql --defaults-extra-file=./mysql.cnf white_ravens -e "UPDATE books SET $column = REPLACE($column, 'borszurowa', 'broszurowa');"
+mysql --defaults-extra-file=./mysql.cnf white_ravens -e "UPDATE books SET $column = REPLACE($column, 'oprawa', '');"
+mysql --defaults-extra-file=./mysql.cnf white_ravens -e "UPDATE books SET $column = REPLACE($column, 'okladka', '');"
 mysql --defaults-extra-file=./mysql.cnf white_ravens -e "UPDATE books SET $column = RTRIM($column);"
 column="Title"
 mysql --defaults-extra-file=./mysql.cnf white_ravens -e "UPDATE books SET $column = REPLACE($column, '</div', '');"
