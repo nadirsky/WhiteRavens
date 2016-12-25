@@ -14,8 +14,8 @@ if [[ $date ]]; then
 		#mysql --defaults-extra-file=./mysql.cnf white_ravens -e "SELECT * FROM book$isbn ORDER BY Year, Month, Day, Hour, Minute, Second ASC;"
 		mysql --defaults-extra-file=./mysql.cnf white_ravens -e "INSERT INTO book$isbn VALUES ($date,$offers,$price);"
 	fi
-else
-	echo "$isbn" >> noData
+#else
+	#echo "$isbn" >> noData
 fi
 
 echo "$isbn $date $offers $price"
