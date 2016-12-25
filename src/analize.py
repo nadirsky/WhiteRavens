@@ -2,14 +2,11 @@ import sys
 import math
 from multiprocessing import Pool
 from multiprocessing.dummy import Pool as ThreadPool
-#import datetime 
 import numpy as np
 import os.path
 from pylab import *
 from scipy import stats,polyfit
 import mysql.connector
-#from mysql.connector import errorcode
-
 
 
 def Time(t1,t2,t3,t4,t5,t6):
@@ -98,34 +95,6 @@ def InfoLine(isbn):
 	cnx.close()
 	return infoLine, info
 
-def AccuracyOfPrediction():
-	nCheck = []
-	tCheck = []
-	quantity = []
-	precision = []
-	for i in range(0, len(n)):
-		if(n[i] == 0 and len(n)>3):
-			i0 = i
-			for j in range(0, i0):
-				nCheck.append(n[j])
-				tCheck.append(t[j])
-				if(len(nCheck)>2):
-					aCheck,bCheck = polyfit(tCheck,nCheck,1)
-					if(aCheck < -1.e-3):
-						quantity.append(len(nCheck))
-						precision.append(-bCheck/aCheck - t[i0])
-			if(len(quantity) > 1):
-				plt.clf()
-				plt.subplot(111)
-				ax = gca()
-				ax.plot(quantity,precision,'-',linewidth=1.0,color="b",label=r'Precision')
-				plt.title(inputfile)
-				plt.rc('text', usetex=True)
-				plt.xlabel(r'$\mathrm{Quantity}$')
-				plt.ylabel(r'$\mathrm{Precision}$')
-				plt.savefig("PredictionCheck/" + (inputfile.replace(".dat", "")).replace("Data/", "")+'PredictionCheck.png')
-			break
-
 def Prediction(t, n, p, isbn, infoLine, info):
 	nP = []
 	tP = []
@@ -155,7 +124,7 @@ def Prediction(t, n, p, isbn, infoLine, info):
 				predictionResult = prediction[len(prediction)-1]
 
 			if(predictionResult < t[len(t)-1] + 50 and n[len(n)-1] > 0 and n[len(n)-1] <= 6 and averagePrice > 20 and info[2] != "miekka" and info[2] != "broszurowa"):
-				plikPred = open("Tmp/predictionToCheck.dat2", 'a')
+				plikPred = open("../Tmp/predictionToCheck.dat2", 'a')
 				plikPred.writelines(str(aP*100000)[:7] + "\t" + str(predictionResult-t[len(t)-1])[:3] + "\t" + str(n[len(n)-1]) + "\t" + infoLine)
 				plikPred.close()
 				
@@ -176,21 +145,17 @@ def Plot(data):
 
 	nr=polyval([aP,bP],t)
 	if(predictionMean != 0 and predictionMean < t[len(t)-1] + 50 and n[len(n)-1] <= 6):
-		#plt.clf()
 		fig, ax1 = plt.subplots()
 		plt.rc('text', usetex=True)
 
 		ax1.plot(t,p,'-',linewidth=3.0,color="b",label=r'price')
-		#ax1.plot(tA,pA,'.',linewidth=3.0,color="b",label=r'price')
 		ax1.set_ylabel(r'Price', color='b')
 		ax1.set_ylim(0,100)
 		for tl in ax1.get_yticklabels():
 	    		tl.set_color('b')
 	
 		ax2 = ax1.twinx()
-		#ax2.plot(t,n,'.',linewidth=1.0,color="g",label=r'number')
 		ax2.plot(t,nAverage3,'-',linewidth=1.0,color="g",label=r'number')
-		#ax2.plot(tA,nA,'--',linewidth=1.0,color="g",label=r'number')
 		ax2.plot(t,nr,'-',linewidth=2.0,color="g",label=r'numberLine')
 		ax2.plot(prediction,[0]*len(prediction),'o',linewidth=1.0,color="r",label=r'')
 		ax2.plot(predictionMean,[0],'o',linewidth=1.0,color="g",label=r'')

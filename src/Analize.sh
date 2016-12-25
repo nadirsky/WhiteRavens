@@ -2,7 +2,7 @@
 
 Analize()
 {
-	list="Tmp/list"
+	list="../Tmp/list"
 	rm -f Results/Sale.dat Results/PredictionToCheck.dat Plot/*.png
 	
 	mysql --defaults-extra-file=./mysql.cnf white_ravens -N -e "SHOW TABLES LIKE '%book978%'" > $list
