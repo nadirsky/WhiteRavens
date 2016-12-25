@@ -124,7 +124,7 @@ def Prediction(t, n, p, isbn, infoLine, info):
 				predictionResult = prediction[len(prediction)-1]
 
 			if(predictionResult < t[len(t)-1] + 50 and n[len(n)-1] > 0 and n[len(n)-1] <= 6 and averagePrice > 20 and info[2] != "miekka" and info[2] != "broszurowa"):
-				plikPred = open("../Tmp/predictionToCheck.dat2", 'a')
+				plikPred = open("../Tmp/prediction.dat2", 'a')
 				plikPred.writelines(str(aP*100000)[:7] + "\t" + str(predictionResult-t[len(t)-1])[:3] + "\t" + str(n[len(n)-1]) + "\t" + infoLine)
 				plikPred.close()
 				
@@ -164,8 +164,7 @@ def Plot(data):
 		ax2.set_ylim(0,40)
 		for tl in ax2.get_yticklabels():
 	    		tl.set_color('g')
-
-		#plt.title(isbn)	
+	
 		ax1.set_xlabel(r'$\mathrm{time [JD - JD_{0}]}$')
 		plt.savefig("Plot/" + infoLine[:13] + '.png')
 		plt.close(fig)
@@ -188,7 +187,7 @@ def ThreadFunction(isbn):
 	Sale(n, p, infoLine)
 	return t, n, p, prediction, predictionMean, predictionResult, aP, bP, nAverage3, infoLine, isbn
 
-
+#if __name__ == __main__:
 f = open(sys.argv[1], 'r')
 ISBN = []
 for line in f:
