@@ -10,6 +10,7 @@ import mysql.connector
 
 
 def Time(t1,t2,t3,t4,t5,t6):
+
 	X = (t2 + 9.) / 12.
 	A = 4716. + t1 + int(X)
 	Y = 275. * t2 / 9.
@@ -22,6 +23,7 @@ def Time(t1,t2,t3,t4,t5,t6):
 	return B + 38. - E + t4/24. + t5/24./60. + t6/24./3600. - 2457600.0
 
 def Average3(A):
+
 	if(len(A)<2):
 		B = A
 	else:
@@ -36,6 +38,7 @@ def Average3(A):
 	return B
 
 def ChangeZero(A):
+
 	price = 0.
 	B = []
 	for i in range(0, len(A)):
@@ -45,12 +48,14 @@ def ChangeZero(A):
 	return B
 
 def AveragePrice(A):
+
 	B = 0.
 	for i in range(0, len(A)):
 		B += A[i]
 	return B/len(A)
 
 def ReadData(isbn):
+
 	cnx = mysql.connector.connect(user='nadirsky', password='a', database='white_ravens')
 	cursor = cnx.cursor()
 	query = ("SELECT * FROM book" + isbn)
@@ -74,6 +79,7 @@ def ReadData(isbn):
 	return t, n, p
 
 def InfoLine(isbn):
+
 	infoLine = ""
 	info = []
 	cnx = mysql.connector.connect(user='nadirsky', password='a', database='white_ravens')
@@ -96,6 +102,7 @@ def InfoLine(isbn):
 	return infoLine, info
 
 def Prediction(t, n, p, isbn, infoLine, info):
+
 	nP = []
 	tP = []
 	averagePrice = AveragePrice(p)
@@ -131,6 +138,7 @@ def Prediction(t, n, p, isbn, infoLine, info):
 	return prediction, predictionMean, predictionResult, aP, bP
 
 def Plot(data):
+
 	t = data[0]
 	n = data[1]
 	p = data[2]
@@ -169,14 +177,15 @@ def Plot(data):
 		plt.savefig("Plot/" + infoLine[:13] + '.png')
 		plt.close(fig)
 
-def Sale(n, p, infoLine): 
+def Sale(n, p, infoLine):
+
 	if(p[len(p)-1]<0.8*p[len(p)-2] and n[len(n)-1] != 0):
-		plik = open("Tmp/Sale.dat2", 'a')
+		plik = open("../Tmp/Sale.dat2", 'a')
 		plik.writelines(str(p[len(p)-1]/p[len(p)-2])[:4] + "\t" + infoLine)
 		plik.close()
 
 def ThreadFunction(isbn):
-	print(isbn)
+
 	t, n, p = ReadData(isbn)
 
 	nAverage3 = Average3(n)
@@ -187,21 +196,33 @@ def ThreadFunction(isbn):
 	Sale(n, p, infoLine)
 	return t, n, p, prediction, predictionMean, predictionResult, aP, bP, nAverage3, infoLine, isbn
 
-#if __name__ == __main__:
-f = open(sys.argv[1], 'r')
-ISBN = []
-for line in f:
-	ISBN.append(line.replace("book", "")[:13])
-	print(line.replace("book", "")[:13])
 
-PlotData = []
-pool = ThreadPool(12)
-PlotData = pool.map(ThreadFunction, ISBN)
-pool.close() 
-pool.join()
 
-for i in range(len(PlotData)-1):
-	Plot(PlotData[i]) 
+def GetBookList():
+
+	ISBN = []
+	cnx = mysql.connector.connect(user='nadirsky', password='a', database='white_ravens')
+	cursor = cnx.cursor()
+	cursor.execute("SHOW TABLES LIKE '%book978%'")
+
+	for table in cursor:
+		ISBN.append(table[0].replace("book", ""))
+
+	cursor.close()
+	cnx.close()
+
+	return ISBN
+
+
+if __name__ == "__main__":
+	PlotData = []
+	pool = ThreadPool(12)
+	PlotData = pool.map(ThreadFunction, GetBookList())
+	pool.close()
+	pool.join()
+
+	for i in range(len(PlotData)-1):
+		Plot(PlotData[i])
 
 
 

@@ -2,12 +2,9 @@
 
 Analize()
 {
-	list="../Tmp/list"
 	rm -f Results/Sale.dat Results/Prediction.dat Plot/*.png
 	
-	mysql --defaults-extra-file=./mysql.cnf white_ravens -N -e "SHOW TABLES LIKE '%book978%'" > $list
-
-	python analize.py $list
+	python analize.py
 
 	sort -t$'\t' -k5,5 -k1,1n Tmp/prediction.dat2 > Results/Prediction.dat
 	sort -t$'\t' -k3,3 -k1,1n Tmp/Sale.dat2 > Results/Sale.dat
@@ -51,6 +48,5 @@ mysql --defaults-extra-file=./mysql.cnf white_ravens -e "UPDATE books SET $colum
 mysql --defaults-extra-file=./mysql.cnf white_ravens -e "UPDATE books SET $column = RTRIM($column);"
 }
 
-#CopyToDatabase
 Clean
 Analize
