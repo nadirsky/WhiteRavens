@@ -2,10 +2,6 @@ import feedparser
 import string
 
 
-title = "Endymion"
-author = "Simmons"
-
-
 def quote(name):
 
     return "%26quot%3B" + name + "%26quot%3B"
@@ -18,6 +14,7 @@ def url(title, author):
 
     return url_begin + quote(title) + quote(author) + url_end
 
+
 def convert_num(val):
     """
      - Remove all extra whitespace
@@ -26,8 +23,13 @@ def convert_num(val):
     val = string.strip(val).replace(",",".")
     return val
 
+
 def get_price(data):
     return convert_num(data.split("Kup Teraz: ")[1].split("z")[0])
+
+title = "Endymion"
+author = "Simmons"
+
 
 d = feedparser.parse(url(title,author))
 

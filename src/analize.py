@@ -144,6 +144,7 @@ def Prediction(t, n, p, isbn, infoLine, info):
                         n[len(n) - 1]) + "\t" + infoLine)
                 plikPred.close()
 
+    print(isbn)
     return prediction, predictionMean, predictionResult, aP, bP
 
 
