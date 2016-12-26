@@ -13,6 +13,7 @@ Analize()
 
 Clean()
 {
+#mysql --defaults-extra-file=./mysql.cnf white_ravens -e "SELECT * FROM book$isbn ORDER BY Year, Month, Day, Hour, Minute, Second ASC;"
 column="Binding"
 mysql --defaults-extra-file=./mysql.cnf white_ravens -e "UPDATE books SET $column = REPLACE($column, '</div', '');"
 mysql --defaults-extra-file=./mysql.cnf white_ravens -e "UPDATE books SET $column = REPLACE($column, '<div>', '');"

@@ -1,4 +1,3 @@
-import subprocess
 import mysql.connector
 import requests
 import datetime
@@ -7,6 +6,7 @@ from multiprocessing.dummy import Pool as ThreadPool
 
 
 def ThreadFunction(book):
+
     isbn = book[0]
     url = book[1]
     result = requests.get(url)
@@ -17,10 +17,10 @@ def ThreadFunction(book):
     lowest_price = summary.get("data-lowestprice")
     offers = summary.get("data-offerscount")
     SaveData(isbn, offers, lowest_price)
-    #print(url)
 
 
 def MakeList():
+
     cnx = mysql.connector.connect(user='nadirsky', password='a', database='white_ravens')
     cursor = cnx.cursor()
     query = ("SELECT ISBN, Address FROM books")
@@ -32,10 +32,12 @@ def MakeList():
 
     cursor.close()
     cnx.close()
+
     return book
 
 
 def Multithreading(threads):
+
     pool = ThreadPool(threads)
     pool.map(ThreadFunction, MakeList())
     pool.close()
@@ -43,6 +45,7 @@ def Multithreading(threads):
 
 
 def SaveData(isbn, offers, lowest_price):
+
     cnx = mysql.connector.connect(user='nadirsky', password='a', database='white_ravens')
     cursor = cnx.cursor()
 
@@ -60,12 +63,12 @@ def SaveData(isbn, offers, lowest_price):
 
 
 def GetDate():
+
     d = datetime.datetime.now()
     return str(d.year) + "," + str(d.month) + "," + str(d.day) + "," + str(d.hour) + "," + str(d.minute) + "," + str(
         d.second)
 
 
 if __name__ == "__main__":
-    #cnx = mysql.connector.connect(user='nadirsky', password='a', database='white_ravens')
+
     Multithreading(12)
-    #cnx.close()
