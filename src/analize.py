@@ -184,7 +184,7 @@ def Plot(data):
             tl.set_color('g')
 
         ax1.set_xlabel(r'$\mathrm{time [JD - JD_{0}]}$')
-        plt.savefig("Plot/" + infoLine[:13] + '.png')
+        plt.savefig("../Plot/" + infoLine[:13] + '.png')
         plt.close(fig)
 
 

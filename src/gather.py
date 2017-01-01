@@ -14,8 +14,11 @@ def ThreadFunction(book):
 	author = book[2]
 	url = book[3]
 
-	save_data_ceneo(get_data_ceneo(isbn, url))
-	save_data_allegro(get_data_allegro(isbn, title, author))
+	try:
+		save_data_ceneo(get_data_ceneo(isbn, url))
+	except:
+		print(ValueError)
+	#save_data_allegro(get_data_allegro(isbn, title, author))
 
 
 def MakeList():
@@ -139,4 +142,4 @@ def GetDate():
 
 if __name__ == "__main__":
 
-	Multithreading(1)
+	Multithreading(8)
