@@ -142,4 +142,4 @@ def GetDate():
 
 if __name__ == "__main__":
 
-	Multithreading(8)
+	Multithreading(32)
