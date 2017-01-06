@@ -2,13 +2,13 @@
 
 Analize()
 {
-	rm -f Results/Sale.dat Results/Prediction.dat Plot/*.png
+	rm -f ../Results/Sale.dat ../Results/Prediction.dat Plot/*.png
 	
 	python analize.py
 
-	sort -t$'\t' -k5,5 -k1,1n Tmp/prediction.dat2 > Results/Prediction.dat
-	sort -t$'\t' -k3,3 -k1,1n Tmp/Sale.dat2 > Results/Sale.dat
-	rm -f Tmp/Sale.dat2 Tmp/prediction.dat2
+	sort -t$'\t' -k5,5 -k1,1n ../Tmp/prediction.dat2 > ../Results/Prediction.dat
+	sort -t$'\t' -k3,3 -k1,1n ../Tmp/Sale.dat2 > ../Results/Sale.dat
+	rm -f ../Tmp/Sale.dat2 ../Tmp/prediction.dat2
 }
 
 Clean()
