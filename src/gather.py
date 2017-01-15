@@ -3,7 +3,7 @@ import requests
 import datetime
 import feedparser
 import string
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, SoupStrainer
 from multiprocessing.dummy import Pool as ThreadPool
 
 
@@ -105,9 +105,10 @@ def save_data_allegro(data):
 
 def get_data_ceneo(isbn, url):
 	result = requests.get(url)
-	soup = BeautifulSoup(result.content)
+	strainer = SoupStrainer('a')
+	soup = BeautifulSoup(result.content, 'lxml', parse_only=strainer)
 
-	summary = soup.find_all("a", {"class": "btn"})[0]
+	summary = soup.find("a", {"class": "btn"})
 	lowest_price = summary.get("data-lowestprice")
 	offers = summary.get("data-offerscount")
 	return isbn, offers, lowest_price
