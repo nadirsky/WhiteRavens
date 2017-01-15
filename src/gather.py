@@ -128,6 +128,7 @@ def save_data_ceneo(data):
 	query = (
 		"INSERT INTO book" + isbn + " VALUES (" + GetDate() + "," + str(offers) + "," + str(lowest_price) + ");")
 	cursor.execute(query)
+	cnx.commit()
 	print(query)
 
 	cursor.close()

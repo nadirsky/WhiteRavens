@@ -2,6 +2,7 @@ import mysql.connector
 import json
 import requests
 import string
+from time import sleep
 from multiprocessing.dummy import Pool as ThreadPool
 
 
@@ -40,9 +41,10 @@ def MakeList():
 
 def ReadBooks():
 
+	sleep(0.5)
 	cnx = mysql.connector.connect(user='nadirsky', password='a', database='white_ravens')
 	cursor = cnx.cursor()
-	query = "SELECT ISBN FROM books_nl"
+	query = "SELECT ISBN FROM books_nl;"
 	cursor.execute(query)
 
 	isbn_list = []
@@ -54,28 +56,29 @@ def ReadBooks():
 
 
 def get_library_data(isbn):
-
-	url= u"http://data.bn.org.pl/api/bibs.json?isbnIssn=" + str(isbn)
+	#sleep(0.5)
+	url= "http://data.bn.org.pl/api/bibs.json?isbnIssn=" + str(isbn)
 
 	try:
 		result = requests.get(url)
 	except requests.exceptions.RequestException as e:  # This is the correct syntax
-		print e
+		print(e)
 
 	data = json.loads(result.content)
 
 	if len(data["bibs"]) > 0:
 		title = string.strip(data["bibs"][0]["title"].split('/')[0])
-		author = data["bibs"][0]["author"].split('(')[0]
+		author = (data["bibs"][0]["author"].split('(')[0]).decode('ascii')
 		surname = string.strip(author.split(',')[0])
 		name = string.strip((author.split(',')[1]).split('.')[0])
 		publisher = (string.strip(data["bibs"][0]["publisher"].split(',')[0])).replace("Wydawnictwo ","")
 
-		cnx = mysql.connector.connect(user='nadirsky', password='a', database='white_ravens')
+		cnx = mysql.connector.connect(user='root', password='a', database='white_ravens')
 		cursor = cnx.cursor()
 
-		query = ("INSERT INTO books_nl (ISBN, title, name, surname, publishing) VALUES (\"" + str(isbn) + "\",\""+ str(title) + "\",\"" + str(name) + "\",\"" + str(surname) + "\",\"" + str(publisher) + "\");")
+		query = "INSERT INTO books_nl (ISBN, title, name, surname, publishing) VALUES (\"" + unicode(isbn) + "\",\""+ unicode(title) + "\",\"" + unicode(name) + "\",\"" + unicode(surname) + "\",\"" + unicode(publisher) + "\");"
 		cursor.execute(query)
+		cnx.commit()
 		print(query)
 
 		cursor.close()
@@ -87,5 +90,6 @@ def get_library_data(isbn):
 
 if __name__ == "__main__":
 
-	ReadBooks()
-	#Multithreading(1) # server will refuse too many connections
+	#ReadBooks()
+	#get_library_data("9788308045374")
+	Multithreading(1) # server will refuse too many connections
