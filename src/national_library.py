@@ -19,8 +19,7 @@ def ThreadFunction(isbn):
 	try:
 		get_library_data(isbn)
 	except:
-		print(ValueError)
-
+		pass
 
 def MakeList():
 
@@ -29,12 +28,26 @@ def MakeList():
 	query = "SELECT ISBN FROM books"
 	cursor.execute(query)
 
-	isbn_list = []
+	isbn_ceneo = []
 	for (ISBN,) in cursor:
-		isbn_list.append(str(ISBN))
+		isbn_ceneo.append(str(ISBN))
 
 	cursor.close()
 	cnx.close()
+
+	cnx = mysql.connector.connect(user='nadirsky', password='a', database='white_ravens')
+	cursor = cnx.cursor()
+	query = "SELECT ISBN FROM books_nl"
+	cursor.execute(query)
+
+	isbn_nl = []
+	for (ISBN,) in cursor:
+		isbn_nl.append(str(ISBN))
+
+	cursor.close()
+	cnx.close()
+
+	isbn_list = [x for x in isbn_ceneo if x not in isbn_nl]
 
 	return isbn_list
 
